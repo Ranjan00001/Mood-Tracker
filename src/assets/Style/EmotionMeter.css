@@ -1,0 +1,19 @@
+.emotion-meter {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.emotion-item {
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.active {
+    border: 2px solid black;
+}

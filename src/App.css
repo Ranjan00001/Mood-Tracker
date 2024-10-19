@@ -1,0 +1,75 @@
+.app-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #444;
+  color: white;
+  margin: 20%;
+  width: 60%;
+  height: auto;
+  position: absolute;
+}
+
+.left-section,
+.center-section,
+.right-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.left-section {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.center-section {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.right-section {
+  flex: 2;
+}
+
+/* Mobile view */
+@media (max-width: 600px) {
+  .app-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    margin: 10%;
+    width: 80%;
+  }
+
+  .left-section,
+  .center-section,
+  .right-section {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .emotion-meter {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .emotion-item {
+    width: 80px;
+    height: 25px;
+  }
+
+  .preaching {
+    max-width: 100%;
+  }
+
+  .graph-container {
+    gap: 5px;
+  }
+
+  .day-bar {
+    width: 30px;
+    height: 80px;
+  }
+}
