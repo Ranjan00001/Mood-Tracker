@@ -1,62 +1,90 @@
 import React, { useState } from 'react';
 import EmotionMeter from '../src/assets/components/EmotionMeter';
-import Preaching from '../src/assets/components/Thought';
 import GraphBar from '../src/assets/components/GraphBar';
+import Preaching from './assets/components/Thought';
 import './App.css';
 
 function App() {
-  const emotions = [
-    { name: 'calm', color: '#D3D3D3' },
-    { name: 'excite', color: '#808080' },
-    { name: 'sad', color: '#FF6666' },
-    { name: 'stressed', color: '#FF3333' },
-    { name: 'tired', color: '#66CC99' },
-    { name: 'relaxed', color: '#336666' },
-    { name: 'bored', color: '#A9A9A9' }
-  ];
+	const emotions = [
+		{ name: 'calm', color: '#D3D3D3' },
+		{ name: 'excited', color: '#808080' },
+		{ name: 'sad', color: '#FF6666' },
+		{ name: 'stressed', color: '#FF3333' },
+		{ name: 'tired', color: '#66CC99' },
+		{ name: 'relaxed', color: '#336666' },
+		{ name: 'bored', color: '#A9A9A9' },
+	];
+	const [currentMood, setCurrentMood] = useState('stressed');
+	const [todayData, setTodayData] = useState({
+		calm: 1,
+		excited: 1,
+		sad: 1,
+		stressed: 1,
+		tired: 1,
+		relaxed: 1,
+		bored: 1,
+	});
 
-  const graphData = [
-    {
-      day: 'Sunday',
-      moods: [
-        { emotion: 'calm', percentage: 16, color: '#D3D3D3' },
-        { emotion: 'excite', percentage: 5, color: '#808080' },
-        { emotion: 'sad', percentage: 23, color: '#FF6666' },
-        { emotion: 'stressed', percentage: 7, color: '#FF3333' },
-        { emotion: 'tired', percentage: 15, color: '#66CC99' }
-      ]
-    },
-    {
-      day: 'Monday',
-      moods: [
-        { emotion: 'calm', percentage: 21, color: '#D3D3D3' },
-        { emotion: 'excite', percentage: 13, color: '#808080' },
-        { emotion: 'sad', percentage: 5, color: '#FF6666' },
-        { emotion: 'stressed', percentage: 15, color: '#FF3333' },
-        { emotion: 'tired', percentage: 25, color: '#66CC99' }
-      ]
-    },
-    // Add more data for other days...
-  ];
+	// Static data for 3 previous days with 1-8 range values
+	const previousGraphData = [
+		{
+			day: 'Monday',
+			moods: { calm: 3, excited: 5, sad: 4, stressed: 6, tired: 8, relaxed: 2, bored: 7 },
+		},
+		{
+			day: 'Tuesday',
+			moods: { calm: 6, excited: 2, sad: 3, stressed: 7, tired: 5, relaxed: 6, bored: 4 },
+		},
+		{
+			day: 'Wednesday',
+			moods: { calm: 5, excited: 8, sad: 7, stressed: 3, tired: 4, relaxed: 4, bored: 6 },
+		},
+	];
 
-  const [selectedEmotion, setSelectedEmotion] = useState('stressed');
+	// Handler to update today's mood data when an emotion meter is changed
+	const handleMeterChange = (emotionName, value) => {
+		setTodayData(prevData => ({
+			...prevData,
+			[emotionName]: value, // Update only the selected emotion's value (1-8)
+		}));
+		const maxKey = value > todayData[currentMood] ? emotionName : currentMood
+		setCurrentMood(maxKey)
+	};
 
-  return (
-    <div className="app-container">
-      <div className="left-section">
-        <EmotionMeter
-          emotions={emotions}
-          selectedEmotion={selectedEmotion}
-        />
-      </div>
-      <div className="center-section">
-        <Preaching emotion={selectedEmotion} />
-      </div>
-      <div className="right-section">
-        <GraphBar data={graphData} />
-      </div>
-    </div>
-  );
+	// Combine today's data with previous days
+	const combinedGraphData = [
+		...previousGraphData,
+		{ day: 'Today', moods: todayData },
+	];
+
+	return (
+		<div className='main'>
+			<h1 className='header'>Your daily Mood Tracker</h1>
+			<div className="app-container">
+				{/* Left section: List of emotion meters */}
+				<div className="left-section">
+					{emotions.map(emotion => (
+						<EmotionMeter
+							key={emotion.name}
+							emotion={emotion}
+							value={todayData[emotion.name]}
+							onMeterChange={handleMeterChange}
+						/>
+					))}
+				</div>
+
+				{/* Center section: Thought/Preaching section */}
+				<div className="center-section">
+					<Preaching emotion={currentMood} />
+				</div>
+
+				{/* Right section: Graph of emotion data */}
+				<div className="right-section">
+					<GraphBar emotions={emotions} graphData={combinedGraphData} />
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default App;

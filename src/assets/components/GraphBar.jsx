@@ -19,41 +19,17 @@ ChartJS.register(
 	Legend
 );
 
-const GraphBar = () => {
-	const moods = {
-		calm: '#D3D3D3',
-		excited: '#808080',
-		sad: '#FF6666',
-		stressed: '#FF3333',
-		tired: '#66CC99',
-		relaxed: '#87CEEB',
-		bored: '#FFD700',
-	};
-
-	const graphData = [
-		{
-			day: 'Sunday',
-			moods: { calm: 16, excited: 5, sad: 23, stressed: 7, tired: 15, relaxed: 10, bored: 9 },
-		},
-		{
-			day: 'Monday',
-			moods: { calm: 21, excited: 13, sad: 5, stressed: 15, tired: 25, relaxed: 8, bored: 13 },
-		},
-		{
-			day: 'Tuesday',
-			moods: { calm: 18, excited: 7, sad: 10, stressed: 12, tired: 20, relaxed: 15, bored: 18 },
-		},
-	];
-
+const GraphBar = ({ emotions, graphData }) => {
 	const labels = graphData.map(item => item.day);
 
-	const datasets = Object.keys(moods).map(emotion => {
-		const emotionPercentage = graphData.map(item => item.moods[emotion] || 0);
+	const datasets = emotions.map(emotion => {
+		const emotionPercentage = graphData.map(item => item.moods[emotion.name] || 0);
 		return {
-			label: emotion,
+			label: emotion.name,
 			data: emotionPercentage,
-			backgroundColor: moods[emotion],
-			barPercentage: 0.8,
+			backgroundColor: emotion.color,
+			barPercentage: 0.5,
+			hoverBackgroundColor: 'rgba(0, 0, 0, 0.8)',
 		};
 	});
 
@@ -62,8 +38,12 @@ const GraphBar = () => {
 			legend: {
 				display: false,
 			},
+			tooltip: {
+				enabled: true,
+			},
 		},
 		responsive: true,
+		maintainAspectRatio: false,
 		scales: {
 			x: {
 				stacked: true,
@@ -71,13 +51,14 @@ const GraphBar = () => {
 			y: {
 				stacked: true,
 				beginAtZero: true,
+				max: 56
 			},
 		},
 	};
 
 	return (
-		<div>
-			<Bar data={{labels, datasets}} options={options} />
+		<div className="graph-container">
+			<Bar data={{ labels, datasets }} options={options} />
 		</div>
 	);
 };

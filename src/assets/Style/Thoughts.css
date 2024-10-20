@@ -1,8 +1,10 @@
 .preaching {
     background-color: #f2f2f2;
+    color: #000000;
     padding: 20px;
-    border-radius: 10px;
-    max-width: 300px;
+    border-radius: 25px;
+    max-height: 300px;
+    min-width: 200px;
     font-size: 14px;
 }
 
@@ -10,10 +12,10 @@
     font-weight: bold;
 }
 
-.preaching ul {
+/* .preaching ul {
     margin-top: 10px;
-}
+} */
 
-.preaching li {
+/* .preaching li {
     margin-bottom: 5px;
-}
+} */

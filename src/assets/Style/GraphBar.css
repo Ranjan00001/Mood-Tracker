@@ -1,13 +1,26 @@
 .graph-container {
-    display: flex;
-    gap: 10px;
+    width: 100%;
+    /* Allow the graph to take full width */
+    height: 400px;
+    /* Increase the height to make bars taller */
+    position: relative;
+}
+
+canvas {
+    display: block;
+    width: 300px !important;
+    /* Force canvas to occupy full width */
+    height: 100% !important;
+    /* Force canvas to occupy full height */
 }
 
 .day-bar {
     display: flex;
     flex-direction: column;
-    width: 40px;
-    height: 100px;
+    width: 35px;
+    /* Decrease width */
+    height: 100%;
+    /* Use full container height */
     border: 1px solid #ccc;
 }
 
@@ -16,6 +29,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 10px;
+    font-size: 12px;
+    /* Adjust font size */
     color: white;
 }

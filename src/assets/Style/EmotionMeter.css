@@ -1,19 +1,43 @@
-.emotion-meter {
+.emotion-meter-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.emotion-label {
+    position: absolute;
+    color: #000000;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: capitalize;
+}
+
+.emotion-meter {
+    display: flex;
+    align-items: center;
+    justify-content:space-around;
 }
 
 .emotion-item {
-    width: 100px;
+    width: 20px;
     height: 30px;
-    text-align: center;
-    line-height: 30px;
-    color: white;
-    border-radius: 5px;
-    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.8s;
+    border: solid #b8b0b0;
+    border-width: 0 1px;
 }
 
-.active {
-    border: 2px solid black;
+#first {
+    border-radius: 25px 0 0 25px;
+}
+
+#last {
+    border-radius: 0 25px 25px 0;
+}
+
+.emotion-item.active {
+    border: none;
+    width: 22px;
 }
