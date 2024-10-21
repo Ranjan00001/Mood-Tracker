@@ -25,18 +25,23 @@ function App() {
 		bored: 1,
 	});
 
-	// Static data for 3 previous days with 1-8 range values
+	const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	const dayIndex = new Date().getDay()
+	const today = daysOfWeek[dayIndex]
+	const yesterday = daysOfWeek[(dayIndex - 1 + 7) % 7]
+	const dayBeforeYesterday = daysOfWeek[(dayIndex - 2 + 7) % 7]
+	const dayBefBefYesterday = daysOfWeek[(dayIndex - 3 + 7) % 7]
 	const previousGraphData = [
 		{
-			day: 'Monday',
+			day: dayBefBefYesterday,
 			moods: { calm: 3, excited: 5, sad: 4, stressed: 6, tired: 8, relaxed: 2, bored: 7 },
 		},
 		{
-			day: 'Tuesday',
+			day: dayBeforeYesterday,
 			moods: { calm: 6, excited: 2, sad: 3, stressed: 7, tired: 5, relaxed: 6, bored: 4 },
 		},
 		{
-			day: 'Wednesday',
+			day: yesterday,
 			moods: { calm: 5, excited: 8, sad: 7, stressed: 3, tired: 4, relaxed: 4, bored: 6 },
 		},
 	];

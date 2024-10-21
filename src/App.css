@@ -1,12 +1,12 @@
 body {
-  background-color:#19231eb8 ;
+  background-color: #19231eb8;
 }
 
 .header {
   color: yellowgreen;
   display: flex;
   justify-content: center;
-  margin: 10% 0 0 0;  
+  margin: 10% 0 0 0;
 }
 
 .app-container {
@@ -15,7 +15,7 @@ body {
   padding: 20px;
   background-color: #444;
   border-radius: 25px;
-  margin: 0 20%;
+  margin: 0 25%;
   position: absolute;
 }
 
@@ -49,6 +49,7 @@ body {
     align-items: center;
     padding: 10px;
     width: 80%;
+    margin-left: 5%;
   }
 
   .left-section,
@@ -59,9 +60,8 @@ body {
     justify-content: center;
   }
 
-  /* Ensure the right-section (graph) moves below */
   .right-section {
-    order: 3; /* Ensures the graph bar is at the bottom */
+    order: 3;
   }
 
   .left-section {
@@ -72,7 +72,6 @@ body {
     order: 2;
   }
 
-  /* Ensure EmotionMeter elements fit nicely */
   .emotion-meter {
     flex-direction: row;
     flex-wrap: wrap;
@@ -82,6 +81,7 @@ body {
   .emotion-item {
     width: 30px;
   }
+
   .emotion-item.active {
     width: 32px;
   }
@@ -90,7 +90,6 @@ body {
     max-width: 100%;
   }
 
-  /* Adjust graph bar styles for mobile */
   .graph-container {
     gap: 5px;
   }

@@ -58,7 +58,7 @@ const GraphBar = ({ emotions, graphData }) => {
 
 	return (
 		<div className="graph-container">
-			<Bar data={{ labels, datasets }} options={options} />
+			<Bar data={{ labels, datasets }} options={options} height={300} width={300} />
 		</div>
 	);
 };
