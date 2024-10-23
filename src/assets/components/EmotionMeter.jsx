@@ -2,7 +2,6 @@ import React from 'react';
 import '../Style/EmotionMeter.css';
 
 function EmotionMeter({ emotion, value, onMeterChange }) {
-  // Click handler to update the meter value
   const handleClick = (index) => {
     onMeterChange(emotion.name, index + 1); // Pass updated value (1-8) to parent
   };
@@ -14,11 +13,11 @@ function EmotionMeter({ emotion, value, onMeterChange }) {
 
       {/* Render 8 sections and separators between them */}
       <div className="emotion-meter">
-        {[...Array(8)].map((_, index) => (
+        {[...Array(3)].map((_, index) => (
           <React.Fragment key={index}>
             <div
               className={`emotion-item ${value > index ? 'active' : ''}`}
-              id={index === 7 ? 'last' : (index === 0 ? 'first': '')}
+              id={index === 2 ? 'last' : (index === 0 ? 'first': '')}
               style={{ backgroundColor: value > index ? emotion.color : '#E0E0E0' }}
               onClick={() => handleClick(index)}
             />

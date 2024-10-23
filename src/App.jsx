@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EmotionMeter from '../src/assets/components/EmotionMeter';
 import GraphBar from '../src/assets/components/GraphBar';
 import Preaching from './assets/components/Thought';
@@ -11,7 +11,7 @@ function App() {
         { name: 'sad', color: '#FF6666' },
         { name: 'stressed', color: '#FF3333' },
         { name: 'tired', color: '#66CC99' },
-        { name: 'relaxed', color: '#336666' },
+        { name: 'happy', color: '#336666' },
         { name: 'bored', color: '#A9A9A9' },
     ];
 
@@ -25,17 +25,20 @@ function App() {
     const [allEntries, setAllEntries] = useState([
         {
             day: dayBefBefYesterday,
-            moods: { calm: 3, excited: 5, sad: 4, stressed: 6, tired: 8, relaxed: 2, bored: 7 },
+            moods: { calm: 3, excited: 5, sad: 4, stressed: 6, tired: 8, happy: 2, bored: 7 },
         },
         {
             day: dayBeforeYesterday,
-            moods: { calm: 6, excited: 2, sad: 3, stressed: 7, tired: 5, relaxed: 6, bored: 4 },
+            moods: { calm: 6, excited: 2, sad: 3, stressed: 7, tired: 5, happy: 6, bored: 4 },
         },
         {
             day: yesterday,
-            moods: { calm: 5, excited: 8, sad: 7, stressed: 3, tired: 4, relaxed: 4, bored: 6 },
+            moods: { calm: 5, excited: 8, sad: 7, stressed: 3, tired: 4, happy: 4, bored: 6 },
         },
     ]);
+
+    // Separate state to handle today's entries (with multiple half-hour logs)
+    const [todayEntries, setTodayEntries] = useState([]);
 
     const [todayData, setTodayData] = useState({
         calm: 1,
@@ -43,13 +46,14 @@ function App() {
         sad: 1,
         stressed: 1,
         tired: 1,
-        relaxed: 1,
+        happy: 1,
         bored: 1,
     });
 
     const [currentMood, setCurrentMood] = useState('stressed');
-    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+    const [selectedDateTime, setSelectedDateTime] = useState(new Date().toISOString().slice(0, 16)); // Default current date and time
 
+    // Handle mood changes and update today's data
     const handleMeterChange = (emotionName, value) => {
         setTodayData(prevData => {
             const updatedData = { ...prevData, [emotionName]: value };
@@ -59,69 +63,113 @@ function App() {
         });
     };
 
-    const handleDateChange = (event) => {
-        const newDate = event.target.value;
-        setSelectedDate(newDate);
+    // Handle date-time selection and reset values for new entry or load previous entry
+    const handleDateTimeChange = (event) => {
+        const newDateTime = event.target.value;
+        setSelectedDateTime(newDateTime);
 
-        const existingEntry = allEntries.find(entry => entry.day === newDate);
+        const existingEntry = todayEntries.find(entry => entry.dateTime === newDateTime);
 
         if (existingEntry) {
+            // Load existing data for the selected date-time
             setTodayData(existingEntry.moods);
         } else {
+            // Reset to default values for new date-time
             setTodayData({
                 calm: 1,
                 excited: 1,
                 sad: 1,
                 stressed: 1,
                 tired: 1,
-                relaxed: 1,
+                happy: 1,
                 bored: 1,
             });
             setCurrentMood('stressed');
         }
     };
 
-    const saveEntry = () => {
-        setAllEntries(prevEntries => {
-            const updatedEntries = [...prevEntries];
-            const existingIndex = updatedEntries.findIndex(entry => entry.day === selectedDate);
+    // Automatically save each change in mood or date-time
+    useEffect(() => {
+        const saveEntry = () => {
+            setTodayEntries(prevEntries => {
+                const updatedEntries = [...prevEntries];
+                const existingIndex = updatedEntries.findIndex(entry => entry.dateTime === selectedDateTime);
 
-            if (existingIndex !== -1) {
-                updatedEntries[existingIndex] = { day: selectedDate, moods: todayData };
-            } else {
-                updatedEntries.push({ day: selectedDate, moods: todayData });
-            }
+                if (existingIndex !== -1) {
+                    // Update the existing entry for this date-time
+                    updatedEntries[existingIndex] = { dateTime: selectedDateTime, moods: todayData };
+                } else {
+                    // Create a new entry for this date-time
+                    updatedEntries.push({ dateTime: selectedDateTime, moods: todayData });
+                }
 
-            return updatedEntries;
+                return updatedEntries;
+            });
+        };
+
+        saveEntry();
+    }, [todayData, selectedDateTime]);
+
+    // Compute average values for today's entries
+    const computeDailyAverage = () => {
+        if (todayEntries.length === 0) return {};
+
+        const totalMoods = todayEntries.reduce((totals, entry) => {
+            Object.keys(entry.moods).forEach(emotion => {
+                totals[emotion] = (totals[emotion] || 0) + entry.moods[emotion];
+            });
+            return totals;
+        }, {});
+
+        const averageMoods = {};
+        Object.keys(totalMoods).forEach(emotion => {
+            averageMoods[emotion] = Math.round(totalMoods[emotion] / todayEntries.length);
         });
+
+        return averageMoods;
     };
 
-    const getLatestEntries = () => {
-        const latestEntries = allEntries.slice(-3);
+    const getGraphData = () => {
+		const todayDate = selectedDateTime.split('T')[0]; // Extract today's date in 'YYYY-MM-DD'
+		const averageTodayMoods = computeDailyAverage();
+	
+		// Add today's average moods as a new entry, if applicable
+		const graphData = [...allEntries];
+		if (Object.keys(averageTodayMoods).length > 0) {
+			const existingIndex = graphData.findIndex(entry => entry.day === todayDate);
+			if (existingIndex !== -1) {
+				graphData[existingIndex] = { day: todayDate, moods: averageTodayMoods };
+			} else {
+				graphData.push({ day: todayDate, moods: averageTodayMoods });
+			}
+		}
+	
+		// Sort the entries by date in ascending order
+		const sortedGraphData = graphData.sort((a, b) => new Date(a.day) - new Date(b.day));
+	
+		// Get only the last three days of data for the graph
+		const recentGraphData = sortedGraphData.slice(-4);
+	
+		return recentGraphData;
+	};
+	
 
-        const todayEntryExists = latestEntries.find(entry => entry.day === selectedDate);
-        if (!todayEntryExists) {
-            latestEntries.push({ day: selectedDate, moods: todayData });
-        }
-
-        return latestEntries;
-    };
-
-    const combinedGraphData = getLatestEntries();
+    const combinedGraphData = getGraphData();
 
     return (
         <>
             <h1 className='header'>Your Daily Mood Tracker</h1>
 
-            {/* Date Picker */}
+            {/* DateTime Picker */}
             <div className="date-selector">
-                <label htmlFor="date-picker">Select a Date for Entry: </label>
+                <label htmlFor="datetime-picker">Select Date & Time for Entry: </label>
                 <input
-                    type="date"
-                    id="date-picker"
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                    max={new Date().toISOString().split('T')[0]}
+                    type="datetime-local"
+                    id="datetime-picker"
+                    value={selectedDateTime}
+                    onChange={handleDateTimeChange}
+                    max={new Date().toISOString().slice(0, 16)}
+                    step="1800" // Allow half-hour increments
                 />
             </div>
 
@@ -135,8 +183,6 @@ function App() {
                             onMeterChange={handleMeterChange}
                         />
                     ))}
-
-                    <button onClick={saveEntry} style={{ cursor:'pointer', borderRadius:'25px', padding:'3px 10px'}}>Save</button>
                 </div>
 
                 <div className="center-section">

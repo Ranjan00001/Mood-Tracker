@@ -21,7 +21,7 @@
 }
 
 .emotion-item {
-    width: 20px;
+    width: 40px;
     height: 30px;
     cursor: pointer;
     transition: background-color 0.8s;
@@ -39,5 +39,5 @@
 
 .emotion-item.active {
     border: none;
-    width: 22px;
+    width: 42px;
 }
